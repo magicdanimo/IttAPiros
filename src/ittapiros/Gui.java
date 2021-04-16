@@ -5,7 +5,14 @@
  */
 package ittapiros;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -130,12 +137,17 @@ public class Gui extends javax.swing.JFrame {
         jMenuItem1.setText("mentés");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                mentes(evt);
             }
         });
         jMenu1.add(jMenuItem1);
 
         jMenuItem2.setText("betöltés");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                betolt(evt);
+            }
+        });
         jMenu1.add(jMenuItem2);
 
         jMenuBar1.add(jMenu1);
@@ -207,10 +219,18 @@ public class Gui extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    private int megfeleloPohar = -1; 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    private int megfeleloPohar = -1;
+    private boolean megtalalta = false;
+    private void mentes(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mentes
+        File file = new File("mentes.txt");
+        try {
+            FileWriter fw = new FileWriter(file);
+            fw.write("" + megfeleloPohar + ";" + megtalalta + ";" + jCheckBox1.isSelected());
+            fw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mentes
 
     private void pohar3(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pohar3
         eltalatTeszt(3);
@@ -239,14 +259,40 @@ public class Gui extends javax.swing.JFrame {
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_jCheckBox1ActionPerformed
-    private void eltalatTeszt(int gombszam){
-        if (megfeleloPohar==-1) {
+
+    private void betolt(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_betolt
+        File file = new File("mentes.txt");
+        Scanner scr;
+        try {
+            scr = new Scanner(file);
+            String sor = scr.next();
+            String[] adatok = sor.split("\\;");
+            System.out.println(adatok[0]);
+            int kivalasztotPohar = Integer.parseInt(adatok[0]);
+            boolean megvanTalalva = Boolean.parseBoolean(adatok[1]);
+            boolean chekbox = Boolean.parseBoolean(adatok[2]);
+            megfeleloPohar = kivalasztotPohar;
+            if (megvanTalalva) {
+                jLabel1.setText("A pohár talált");
+                megtalalta = true;
+            } else {
+                jLabel1.setText("A pohár nem talált");
+            }
+            jCheckBox1.setSelected(chekbox);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_betolt
+    private void eltalatTeszt(int gombszam) {
+        if (megfeleloPohar == -1) {
             ujPoharsorsol();
         }
         if (gombszam == megfeleloPohar) {
             jLabel1.setText("A pohár talált");
+            megtalalta = true;
         } else {
             jLabel1.setText("A pohár nem talált");
         }
@@ -254,10 +300,13 @@ public class Gui extends javax.swing.JFrame {
             ujPoharsorsol();
         }
     }
-    private void ujPoharsorsol(){
-    Random rnd = new Random();
-        megfeleloPohar = rnd.nextInt(3-1+1)+1;
+
+    private void ujPoharsorsol() {
+        Random rnd = new Random();
+        megtalalta = false;
+        megfeleloPohar = rnd.nextInt(3 - 1 + 1) + 1;
     }
+
     /**
      * @param args the command line arguments
      */
