@@ -25,6 +25,7 @@ public class Gui extends javax.swing.JFrame {
      */
     public Gui() {
         initComponents();
+        init();
     }
 
     /**
@@ -219,13 +220,21 @@ public class Gui extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
     private int megfeleloPohar = -1;
     private boolean megtalalta = false;
+    private boolean fileletezik = false;
+    private void init(){
+        File file = new File("tipp.deb");
+        if (file.exists()) {
+            fileletezik = true;
+        }
+    }
     private void mentes(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mentes
         File file = new File("mentes.txt");
         try {
             FileWriter fw = new FileWriter(file);
-            fw.write("" + megfeleloPohar + ";" + megtalalta + ";" + jCheckBox1.isSelected());
+            fw.write("" + megfeleloPohar + ";" + megtalalta + ";" + jCheckBox1.isSelected()+";"+fileletezik);
             fw.close();
         } catch (IOException ex) {
             Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
@@ -261,7 +270,7 @@ public class Gui extends javax.swing.JFrame {
         // TODO add your handling code here:
 
     }//GEN-LAST:event_jCheckBox1ActionPerformed
-
+    
     private void betolt(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_betolt
         File file = new File("mentes.txt");
         Scanner scr;
@@ -273,7 +282,9 @@ public class Gui extends javax.swing.JFrame {
             int kivalasztotPohar = Integer.parseInt(adatok[0]);
             boolean megvanTalalva = Boolean.parseBoolean(adatok[1]);
             boolean chekbox = Boolean.parseBoolean(adatok[2]);
+            boolean filevan = Boolean.parseBoolean(adatok[3]);
             megfeleloPohar = kivalasztotPohar;
+            fileletezik = filevan;
             if (megvanTalalva) {
                 jLabel1.setText("A pohár talált");
                 megtalalta = true;
@@ -289,6 +300,9 @@ public class Gui extends javax.swing.JFrame {
     private void eltalatTeszt(int gombszam) {
         if (megfeleloPohar == -1) {
             ujPoharsorsol();
+            if (fileletezik) {
+                setTitle(""+megfeleloPohar);
+            }
         }
         if (gombszam == megfeleloPohar) {
             jLabel1.setText("A pohár talált");
